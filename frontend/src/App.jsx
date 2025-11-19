@@ -12,6 +12,12 @@ import ResetPasswordPage from "./pages/ResetPasswordPage.jsx";
 import VerifyEmailPage from "./pages/VerifyEmailPage.jsx";
 import SettingsPage from "./pages/SettingsPage.jsx";
 import TenantSignupPage from "./pages/TenantSignupPage.jsx";
+import TenantWelcomePage from "./pages/TenantWelcomePage.jsx";
+import IndustryOnboardingPage from "./pages/IndustryOnboardingPage.jsx";
+import ProviderDirectoryPage from "./pages/ProviderDirectoryPage.jsx";
+import BookAppointmentPage from "./pages/BookAppointmentPage.jsx";
+import AppointmentsPage from "./pages/AppointmentsPage.jsx";
+import AdminDashboardPage from "./pages/AdminDashboardPage.jsx";
 
 import { Toaster } from "react-hot-toast";
 
@@ -26,6 +32,7 @@ const App = () => {
 
   const isAuthenticated = Boolean(authUser);
   const isOnboarded = authUser?.isOnboarded;
+  const isAdmin = authUser?.role === "admin";
 
   if (isLoading) return <PageLoader />;
 
@@ -97,7 +104,7 @@ const App = () => {
           element={
             isAuthenticated ? (
               !isOnboarded ? (
-                <OnboardingPage />
+                <IndustryOnboardingPage />
               ) : (
                 <Navigate to="/" />
               )
@@ -114,8 +121,61 @@ const App = () => {
         {/* Email Verification */}
         <Route path="/verify-email" element={<VerifyEmailPage />} />
 
-        {/* Tenant/Organization Signup */}
+        {/* Tenant/Organization Management */}
         <Route path="/create-organization" element={<TenantSignupPage />} />
+        <Route path="/tenant-welcome" element={<TenantWelcomePage />} />
+
+        {/* Healthcare Routes */}
+        <Route
+          path="/providers"
+          element={
+            isAuthenticated && isOnboarded ? (
+              <Layout showSidebar={true}>
+                <ProviderDirectoryPage />
+              </Layout>
+            ) : (
+              <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
+            )
+          }
+        />
+        <Route
+          path="/book-appointment/:providerId"
+          element={
+            isAuthenticated && isOnboarded ? (
+              <Layout showSidebar={false}>
+                <BookAppointmentPage />
+              </Layout>
+            ) : (
+              <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
+            )
+          }
+        />
+        <Route
+          path="/appointments"
+          element={
+            isAuthenticated && isOnboarded ? (
+              <Layout showSidebar={true}>
+                <AppointmentsPage />
+              </Layout>
+            ) : (
+              <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
+            )
+          }
+        />
+
+        {/* Admin Routes */}
+        <Route
+          path="/admin"
+          element={
+            isAuthenticated && isOnboarded && isAdmin ? (
+              <Layout showSidebar={true}>
+                <AdminDashboardPage />
+              </Layout>
+            ) : (
+              <Navigate to={!isAuthenticated ? "/login" : isOnboarded ? "/" : "/onboarding"} />
+            )
+          }
+        />
 
         {/* Settings */}
         <Route
