@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 
 const friendRequestSchema = new mongoose.Schema(
   {
+    tenantId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Tenant",
+      required: false, // Optional for backward compatibility
+    },
     sender: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -22,6 +27,10 @@ const friendRequestSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+// Indexes
+friendRequestSchema.index({ tenantId: 1, recipient: 1, status: 1 });
+friendRequestSchema.index({ tenantId: 1, sender: 1, status: 1 });
 
 const FriendRequest = mongoose.model("FriendRequest", friendRequestSchema);
 

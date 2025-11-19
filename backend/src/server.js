@@ -8,10 +8,13 @@ import helmet from "helmet";
 import authRoutes from "./routes/auth.route.js";
 import userRoutes from "./routes/user.route.js";
 import chatRoutes from "./routes/chat.route.js";
+import tenantRoutes from "./routes/tenant.route.js";
+import appointmentRoutes from "./routes/appointment.route.js";
 
 import { connectDB } from "./lib/db.js";
 import logger from "./lib/logger.js";
 import { apiLimiter } from "./middleware/rateLimiter.js";
+import { identifyTenant } from "./middleware/tenant.middleware.js";
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -47,10 +50,15 @@ if (process.env.NODE_ENV !== "production") {
   });
 }
 
+// Tenant identification middleware (must come before routes)
+app.use(identifyTenant);
+
 // API routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/chat", chatRoutes);
+app.use("/api/tenants", tenantRoutes);
+app.use("/api/appointments", appointmentRoutes);
 
 // Health check endpoint
 app.get("/api/health", (req, res) => {
