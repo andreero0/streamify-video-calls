@@ -11,6 +11,7 @@ import ForgotPasswordPage from "./pages/ForgotPasswordPage.jsx";
 import ResetPasswordPage from "./pages/ResetPasswordPage.jsx";
 import VerifyEmailPage from "./pages/VerifyEmailPage.jsx";
 import SettingsPage from "./pages/SettingsPage.jsx";
+import TenantSignupPage from "./pages/TenantSignupPage.jsx";
 
 import { Toaster } from "react-hot-toast";
 
@@ -112,6 +113,9 @@ const App = () => {
 
         {/* Email Verification */}
         <Route path="/verify-email" element={<VerifyEmailPage />} />
+
+        {/* Tenant/Organization Signup */}
+        <Route path="/create-organization" element={<TenantSignupPage />} />
 
         {/* Settings */}
         <Route

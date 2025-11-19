@@ -112,3 +112,69 @@ export async function getStreamToken() {
   const response = await axiosInstance.get("/chat/token");
   return response.data;
 }
+
+// Tenant APIs
+export async function createTenant(tenantData) {
+  const response = await axiosInstance.post("/tenants", tenantData);
+  return response.data;
+}
+
+export async function getTenantConfig(tenantId) {
+  const response = await axiosInstance.get(`/tenants/${tenantId}/config`);
+  return response.data;
+}
+
+export async function updateTenantConfig(tenantId, configData) {
+  const response = await axiosInstance.put(`/tenants/${tenantId}/config`, configData);
+  return response.data;
+}
+
+export async function getTenantAnalytics(tenantId) {
+  const response = await axiosInstance.get(`/tenants/${tenantId}/analytics`);
+  return response.data;
+}
+
+export async function getTenantUsers(tenantId, params) {
+  const response = await axiosInstance.get(`/tenants/${tenantId}/users`, { params });
+  return response.data;
+}
+
+export async function getAllTenants(params) {
+  const response = await axiosInstance.get("/tenants", { params });
+  return response.data;
+}
+
+// Appointment APIs (Healthcare)
+export async function createAppointment(appointmentData) {
+  const response = await axiosInstance.post("/appointments", appointmentData);
+  return response.data;
+}
+
+export async function getMyAppointments(params) {
+  const response = await axiosInstance.get("/appointments", { params });
+  return response.data;
+}
+
+export async function getAppointment(appointmentId) {
+  const response = await axiosInstance.get(`/appointments/${appointmentId}`);
+  return response.data;
+}
+
+export async function updateAppointment(appointmentId, updateData) {
+  const response = await axiosInstance.put(`/appointments/${appointmentId}`, updateData);
+  return response.data;
+}
+
+export async function cancelAppointment(appointmentId, reason) {
+  const response = await axiosInstance.delete(`/appointments/${appointmentId}`, {
+    data: { reason },
+  });
+  return response.data;
+}
+
+export async function getProviderAvailability(providerId, date) {
+  const response = await axiosInstance.get(`/appointments/providers/${providerId}/availability`, {
+    params: { date },
+  });
+  return response.data;
+}
