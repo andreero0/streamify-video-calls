@@ -7,6 +7,10 @@ import NotificationsPage from "./pages/NotificationsPage.jsx";
 import CallPage from "./pages/CallPage.jsx";
 import ChatPage from "./pages/ChatPage.jsx";
 import OnboardingPage from "./pages/OnboardingPage.jsx";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage.jsx";
+import ResetPasswordPage from "./pages/ResetPasswordPage.jsx";
+import VerifyEmailPage from "./pages/VerifyEmailPage.jsx";
+import SettingsPage from "./pages/SettingsPage.jsx";
 
 import { Toaster } from "react-hot-toast";
 
@@ -98,6 +102,25 @@ const App = () => {
               )
             ) : (
               <Navigate to="/login" />
+            )
+          }
+        />
+
+        {/* Password Reset Routes */}
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
+
+        {/* Email Verification */}
+        <Route path="/verify-email" element={<VerifyEmailPage />} />
+
+        {/* Settings */}
+        <Route
+          path="/settings"
+          element={
+            isAuthenticated && isOnboarded ? (
+              <SettingsPage />
+            ) : (
+              <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
             )
           }
         />

@@ -1,18 +1,78 @@
 import express from "express";
-import { login, logout, onboard, signup } from "../controllers/auth.controller.js";
+import {
+  login,
+  logout,
+  onboard,
+  signup,
+  verifyEmail,
+  resendVerificationEmail,
+  requestPasswordReset,
+  resetPassword,
+  updateProfile,
+  deleteAccount,
+  getMe,
+} from "../controllers/auth.controller.js";
 import { protectRoute } from "../middleware/auth.middleware.js";
+import {
+  authLimiter,
+  passwordResetLimiter,
+  emailVerificationLimiter,
+} from "../middleware/rateLimiter.js";
+import {
+  signupValidation,
+  loginValidation,
+  onboardingValidation,
+  profileUpdateValidation,
+  passwordResetRequestValidation,
+  passwordResetValidation,
+  handleValidationErrors,
+} from "../lib/validation.js";
 
 const router = express.Router();
 
-router.post("/signup", signup);
-router.post("/login", login);
-router.post("/logout", logout);
+// Authentication routes with rate limiting and validation
+router.post("/signup", authLimiter, signupValidation, handleValidationErrors, signup);
+router.post("/login", authLimiter, loginValidation, handleValidationErrors, login);
+router.post("/logout", protectRoute, logout);
 
-router.post("/onboarding", protectRoute, onboard);
+// Email verification routes
+router.post("/verify-email", verifyEmail);
+router.post(
+  "/resend-verification",
+  protectRoute,
+  emailVerificationLimiter,
+  resendVerificationEmail
+);
 
-// check if user is logged in
-router.get("/me", protectRoute, (req, res) => {
-  res.status(200).json({ success: true, user: req.user });
-});
+// Password reset routes
+router.post(
+  "/forgot-password",
+  passwordResetLimiter,
+  passwordResetRequestValidation,
+  handleValidationErrors,
+  requestPasswordReset
+);
+router.post(
+  "/reset-password",
+  passwordResetValidation,
+  handleValidationErrors,
+  resetPassword
+);
+
+// User profile routes
+router.post("/onboarding", protectRoute, onboardingValidation, handleValidationErrors, onboard);
+router.put(
+  "/update-profile",
+  protectRoute,
+  profileUpdateValidation,
+  handleValidationErrors,
+  updateProfile
+);
+
+// Account management
+router.delete("/delete-account", protectRoute, deleteAccount);
+
+// Check if user is logged in
+router.get("/me", protectRoute, getMe);
 
 export default router;

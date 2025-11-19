@@ -11,15 +11,18 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+      lowercase: true,
+      trim: true,
     },
     password: {
       type: String,
       required: true,
-      minlength: 6,
+      minlength: 12,
     },
     bio: {
       type: String,
       default: "",
+      maxlength: 500,
     },
     profilePic: {
       type: String,
@@ -36,10 +39,31 @@ const userSchema = new mongoose.Schema(
     location: {
       type: String,
       default: "",
+      maxlength: 100,
     },
     isOnboarded: {
       type: Boolean,
       default: false,
+    },
+    isEmailVerified: {
+      type: Boolean,
+      default: false,
+    },
+    emailVerificationToken: {
+      type: String,
+      default: null,
+    },
+    emailVerificationExpires: {
+      type: Date,
+      default: null,
+    },
+    passwordResetToken: {
+      type: String,
+      default: null,
+    },
+    passwordResetExpires: {
+      type: Date,
+      default: null,
     },
     friends: [
       {
@@ -50,6 +74,12 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+// Add indexes for performance
+userSchema.index({ email: 1 });
+userSchema.index({ friends: 1 });
+userSchema.index({ isOnboarded: 1 });
+userSchema.index({ nativeLanguage: 1, learningLanguage: 1 });
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();

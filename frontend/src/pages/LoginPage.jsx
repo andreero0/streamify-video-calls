@@ -79,6 +79,9 @@ const LoginPage = () => {
                   <div className="form-control w-full space-y-2">
                     <label className="label">
                       <span className="label-text">Password</span>
+                      <Link to="/forgot-password" className="label-text-alt link link-primary">
+                        Forgot password?
+                      </Link>
                     </label>
                     <input
                       type="password"
